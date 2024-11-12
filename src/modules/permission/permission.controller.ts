@@ -39,7 +39,7 @@ export class PermissionController {
     )
     id: string,
   ) {
-    return this.permissionService.findOneById(id);
+    return this.permissionService.findOne(id);
   }
 
   @Patch(':id')

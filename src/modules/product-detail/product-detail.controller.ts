@@ -1,7 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  BadRequestException,
+  Query,
+} from '@nestjs/common';
 import { ProductDetailService } from './product-detail.service';
 import { CreateProductDetailDto } from './dto/create-product-detail.dto';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
+import { PaginationDto } from '@/dto/pagination';
 
 @Controller('product-detail')
 export class ProductDetailController {
@@ -13,22 +25,47 @@ export class ProductDetailController {
   }
 
   @Get()
-  findAll() {
-    return this.productDetailService.findAll();
+  findAll(@Query() query: PaginationDto) {
+    return this.productDetailService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productDetailService.findOne(+id);
+  findOne(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory: () => new BadRequestException('Id không hợp lệ'),
+      }),
+    )
+    id: string,
+  ) {
+    return this.productDetailService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDetailDto: UpdateProductDetailDto) {
-    return this.productDetailService.update(+id, updateProductDetailDto);
+  update(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory: () => new BadRequestException('Id không hợp lệ'),
+      }),
+    )
+    id: string,
+    @Body() updateProductDetailDto: UpdateProductDetailDto,
+  ) {
+    return this.productDetailService.update(id, updateProductDetailDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productDetailService.remove(+id);
+  remove(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory: () => new BadRequestException('Id không hợp lệ'),
+      }),
+    )
+    id: string,
+  ) {
+    return this.productDetailService.remove(id);
   }
 }

@@ -15,17 +15,20 @@ export class ProductDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   price: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   color: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   size: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   quantity: number;
+
+  @Column('simple-array', { nullable: false })
+  images: string[];
 
   @ManyToOne(() => Product, (product) => product.productDetails)
   product: Relation<Product>;

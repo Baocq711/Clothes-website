@@ -1,16 +1,24 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Permission } from '@/modules/permission/entities/permission.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { PaginationDto } from '@/dto/pagination';
+import { Role } from '@/modules/role/entities/role.entity';
 
 @Injectable()
 export class PermissionService {
   constructor(
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
+
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
   create = async (createPermissionDto: CreatePermissionDto) => {
@@ -23,12 +31,25 @@ export class PermissionService {
       throw new BadRequestException('Quyền hạn đã tồn tại');
     }
 
-    const newPermission = await this.permissionRepository.save(
-      this.permissionRepository.create(createPermissionDto),
-    );
+    const roles = await this.roleRepository.find({
+      where: { id: In(createPermissionDto.roleIds) },
+    });
+
+    if (
+      createPermissionDto.roleIds &&
+      roles.length !== createPermissionDto.roleIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều role không tồn tại');
+    }
+
+    const permission = this.permissionRepository.create({
+      ...createPermissionDto,
+      roles,
+    });
+    const record = await this.permissionRepository.save(permission);
     return {
-      id: newPermission.id,
-      createdAt: newPermission.createdAt,
+      id: record.id,
+      createdAt: record.createdAt,
     };
   };
 
@@ -36,6 +57,7 @@ export class PermissionService {
     const [data, totalRecords] = await this.permissionRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
+      relations: ['roles'],
     });
 
     const totalPages = Math.ceil(totalRecords / limit);
@@ -51,8 +73,11 @@ export class PermissionService {
     };
   };
 
-  findOneById = async (id: string) => {
-    const permission = await this.permissionRepository.findOneBy({ id });
+  findOne = async (id: string) => {
+    const permission = await this.permissionRepository.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
     if (!permission) {
       throw new BadRequestException('Id không tồn tại');
     }
@@ -60,17 +85,44 @@ export class PermissionService {
   };
 
   update = async (id: string, updatePermissionDto: UpdatePermissionDto) => {
-    if (!(await this.permissionRepository.findOneBy({ id }))) {
+    const permissionUpdate = await this.permissionRepository.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
+    if (!permissionUpdate) {
       throw new BadRequestException('Id không tồn tại');
     }
-    return await this.permissionRepository.update(id, updatePermissionDto);
+
+    const roles = await this.roleRepository.find({
+      where: { id: In(updatePermissionDto.roleIds) },
+    });
+
+    if (
+      updatePermissionDto.roleIds &&
+      roles.length !== updatePermissionDto.roleIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều role không tồn tại');
+    }
+    await this.permissionRepository.update(id, updatePermissionDto);
+
+    return {
+      id: permissionUpdate.id,
+      updatedAt: permissionUpdate.updatedAt,
+    };
   };
 
   remove = async (id: string) => {
-    const deletePermission = await this.permissionRepository.findOneBy({ id });
-    if (!deletePermission) {
+    const permission = await this.permissionRepository.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
+    if (!permission) {
       throw new BadRequestException('Id không tồn tại');
     }
-    return await this.permissionRepository.softRemove(deletePermission);
+    const record = await this.permissionRepository.softRemove(permission);
+    return {
+      id: record.id,
+      deletedAt: record.deletedAt,
+    };
   };
 }

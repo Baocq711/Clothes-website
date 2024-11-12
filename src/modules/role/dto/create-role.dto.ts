@@ -1,9 +1,8 @@
-import { Permission } from '@/modules/permission/entities/permission.entity';
 import {
   IsArray,
   IsBoolean,
-  IsEmpty,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   MaxLength,
@@ -24,10 +23,12 @@ export class CreateRoleDto {
   @IsNotEmpty()
   isActived: boolean;
 
+  @IsOptional()
   @IsArray()
   @IsUUID('all', { each: true })
   permissionIds: string[];
 
+  @IsOptional()
   @IsArray()
   @IsUUID('all', { each: true })
   userIds: string[];

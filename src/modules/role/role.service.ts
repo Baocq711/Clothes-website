@@ -10,12 +10,11 @@ import { Role } from '@/modules/role/entities/role.entity';
 import { In, Repository } from 'typeorm';
 import { Permission } from '@/modules/permission/entities/permission.entity';
 import { PaginationDto } from '@/dto/pagination';
-import { isNotEmptyObject } from 'class-validator';
 import { User } from '@/modules/user/entities/user.entity';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role) private rolesRepository: Repository<Role>,
+    @InjectRepository(Role) private roleRepository: Repository<Role>,
     @InjectRepository(Permission)
     private permissionsRepository: Repository<Permission>,
     @InjectRepository(User)
@@ -23,7 +22,7 @@ export class RoleService {
   ) {}
 
   create = async (createRoleDto: CreateRoleDto) => {
-    if (await this.rolesRepository.findOneBy({ name: createRoleDto.name })) {
+    if (await this.roleRepository.findOneBy({ name: createRoleDto.name })) {
       throw new BadRequestException('Role đã tồn tại');
     }
 
@@ -46,13 +45,13 @@ export class RoleService {
       throw new NotFoundException('Một hoặc nhiều người dùng không tồn tại');
     }
 
-    const role = this.rolesRepository.create({
+    const role = this.roleRepository.create({
       ...createRoleDto,
       permissions,
       users,
     });
 
-    const record = await this.rolesRepository.save(role);
+    const record = await this.roleRepository.save(role);
 
     return {
       id: record.id,
@@ -61,7 +60,7 @@ export class RoleService {
   };
 
   findAll = async ({ page, limit }: PaginationDto) => {
-    const [data, totalRecords] = await this.rolesRepository.findAndCount({
+    const [data, totalRecords] = await this.roleRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
       relations: ['permissions', 'users'],
@@ -81,21 +80,25 @@ export class RoleService {
   };
 
   findOne = async (id: string) => {
-    const role = await this.rolesRepository.findOne({
+    const role = await this.roleRepository.findOne({
       where: { id },
       relations: ['permissions', 'users'],
     });
     if (!role) {
-      throw new BadRequestException('Role không tồn tại');
+      throw new NotFoundException('Role không tồn tại');
     }
     return role;
   };
 
   update = async (id: string, updateRoleDto: UpdateRoleDto) => {
-    const roleUpdate = await this.rolesRepository.findOne({
+    const roleUpdate = await this.roleRepository.findOne({
       where: { id },
       relations: ['permissions', 'users'],
     });
+
+    if (!roleUpdate) {
+      throw new NotFoundException('Role không tồn tại');
+    }
 
     const permissions = await this.permissionsRepository.find({
       where: { id: In(updateRoleDto.permissionIds) },
@@ -116,13 +119,13 @@ export class RoleService {
       throw new NotFoundException('Một hoặc nhiều người dùng không tồn tại');
     }
 
-    const role = this.rolesRepository.create({
+    const role = this.roleRepository.create({
       ...updateRoleDto,
       permissions,
       users,
     });
 
-    await this.rolesRepository.update(id, role);
+    await this.roleRepository.update(id, role);
 
     return {
       id: roleUpdate.id,
@@ -131,33 +134,19 @@ export class RoleService {
   };
 
   remove = async (id: string) => {
-    const deleteUser = await this.rolesRepository.findOne({
+    const role = await this.roleRepository.findOne({
       where: { id },
+      relations: ['permissions', 'users'],
     });
-    if (!deleteUser) {
-      throw new BadRequestException('Id không tồn tại');
+
+    if (!role) {
+      throw new NotFoundException('Role không tồn tại');
     }
 
-    return await this.rolesRepository.softRemove(deleteUser);
-  };
-
-  getPermissions = async (permissionIds: string[]): Promise<Permission[]> => {
-    if (permissionIds.length === 0) {
-      return [];
-    }
-
-    return await this.permissionsRepository.find({
-      where: { id: In(permissionIds) },
-    });
-  };
-
-  getPermission = async (permissionIds: string): Promise<Permission> => {
-    if (permissionIds.length === 0) {
-      return null;
-    }
-
-    return await this.permissionsRepository.findOne({
-      where: { id: permissionIds },
-    });
+    const record = await this.roleRepository.softRemove(role);
+    return {
+      id: record.id,
+      deletedAt: record.deletedAt,
+    };
   };
 }

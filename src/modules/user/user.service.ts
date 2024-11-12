@@ -85,7 +85,7 @@ export class UserService {
     const [data, totalRecords] = await this.userRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
-      relations: ['role', 'contacts', 'reviews'],
+      relations: ['role', 'contacts', 'reviews', 'reviews.product'],
     });
 
     const totalPages = Math.ceil(totalRecords / limit);
@@ -104,7 +104,7 @@ export class UserService {
   findOne = async (id: string) => {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['contacts', 'role', 'reviews'],
+      relations: ['contacts', 'role', 'reviews', 'reviews.product'],
     });
     if (!user) {
       throw new NotFoundException('Người dùng không tồn tại');

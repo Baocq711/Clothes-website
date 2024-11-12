@@ -26,7 +26,7 @@ export class CategoryService {
         name: createCategoryDto.name,
       })
     ) {
-      throw new NotFoundException('Category đã tồn tại');
+      throw new BadRequestException('Category đã tồn tại');
     }
 
     const parent = await this.categoriesRepository.findOneBy({
@@ -116,8 +116,8 @@ export class CategoryService {
     if (updateCategoryDto.parentId && !parent) {
       throw new NotFoundException('Parent category không tồn tại');
     }
-    const children = await this.categoriesRepository.findBy({
-      id: In(updateCategoryDto?.childrenIds),
+    const children = await this.categoriesRepository.find({
+      where: { id: In(updateCategoryDto?.childrenIds) },
     });
     if (
       updateCategoryDto.childrenIds &&
@@ -128,8 +128,8 @@ export class CategoryService {
       );
     }
 
-    const products = await this.productsRepository.findBy({
-      id: In(updateCategoryDto?.productIds),
+    const products = await this.productsRepository.find({
+      where: { id: In(updateCategoryDto?.productIds) },
     });
 
     if (

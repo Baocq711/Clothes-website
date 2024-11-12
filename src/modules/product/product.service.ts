@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +30,7 @@ export class ProductService {
     if (
       await this.productRepository.findOneBy({ name: createProductDto.name })
     ) {
-      throw new Error('Sản phẩm đã tồn tại');
+      throw new BadRequestException('Sản phẩm đã tồn tại');
     }
 
     const category = await this.categoriesRepository.findOneBy({
@@ -66,7 +70,7 @@ export class ProductService {
     const [data, totalRecords] = await this.productRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
-      relations: ['category', 'productDetails', 'reviews'],
+      relations: ['category', 'productDetails', 'reviews', 'reviews.user'],
     });
 
     const totalPages = Math.ceil(totalRecords / limit);
@@ -85,7 +89,7 @@ export class ProductService {
   findOne = async (id: string) => {
     const category = await this.productRepository.findOne({
       where: { id },
-      relations: ['category', 'productDetails', 'reviews'],
+      relations: ['category', 'productDetails', 'reviews', 'reviews.user'],
     });
     if (!category) {
       throw new NotFoundException('Category không tồn tại');

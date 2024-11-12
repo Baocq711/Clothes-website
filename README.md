@@ -1,99 +1,777 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Clothes Website
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Installation
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+1. Clone the repository:
 
-## Description
+   ```sh
+   git clone <repository-url>
+   cd clothes-website
+   ```
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+2. Install dependencies:
 
-## Project setup
+   ```sh
+   npm install
+   ```
 
-```bash
-$ npm install
-```
+3. Set up the environment variables:
+   - Create a [.env](http://_vscodecontentref_/1) file in the root directory.
+   - Add the following environment variables:
+     ```env
+     DB_HOST=<your-database-host>
+     DB_PORT=<your-database-port>
+     DB_USER=<your-database-username>
+     DB_PASS=<your-database-password>
+     DB_NAME=<your-database-name>
+     ACCESS_TOKEN_SECRET=<your-access-token-secret>
+     ACCESS_TOKEN_EXPIRES=<access-token-expiry-time>
+     REFRESH_TOKEN_SECRET=<your-refresh-token-secret>
+     REFRESH_TOKEN_EXPIRES=<refresh-token-expiry-time>
+     INIT_PASSWORD=<initial-password>
+     SHOULD_INIT=true
+     ```
 
-## Compile and run the project
+## Starting the Application
 
-```bash
-# development
-$ npm run start
+1. Start the application in development mode:
 
-# watch mode
-$ npm run start:dev
+   ```sh
+   npm run dev
+   ```
 
-# production mode
-$ npm run start:prod
-```
+2. Start the application in production mode:
+   ```sh
+   npm run start:prod
+   ```
 
-## Run tests
+## API Endpoints
 
-```bash
-# unit tests
-$ npm run test
+### Auth
 
-# e2e tests
-$ npm run test:e2e
+- **Sign Up**
 
-# test coverage
-$ npm run test:cov
-```
+  - `POST /api/v1/auth/signup`
+  - **Request Body:**
+    ```json
+    {
+      "email": "string",
+      "password": "string",
+      "name": "string",
+      "age": "number",
+      "gender": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
 
-## Deployment
+- **Sign In**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+  - `POST /api/v1/auth/signin`
+  - **Request Body:**
+    ```json
+    {
+      "email": "string",
+      "password": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "access_token": "string"
+    }
+    ```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- **Sign Out**
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+  - `POST /api/v1/auth/signout`
+  - **Response:**
+    ```json
+    {
+      "message": "Đăng xuất thành công"
+    }
+    ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- **Refresh Token**
 
-## Resources
+  - `GET /api/v1/auth/refresh`
+  - **Response:**
+    ```json
+    {
+      "access_token": "string"
+    }
+    ```
 
-Check out a few resources that may come in handy when working with NestJS:
+- **Get Profile**
+  - `GET /api/v1/auth/account`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "email": "string",
+      "name": "string",
+      "age": "number",
+      "gender": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Users
 
-## Support
+- **Create User**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  - `POST /api/v1/user`
+  - **Request Body:**
+    ```json
+    {
+      "email": "string",
+      "password": "string",
+      "name": "string",
+      "age": "number",
+      "gender": "string",
+      "roleId": "string",
+      "contactIds": ["string"],
+      "reviewIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
 
-## Stay in touch
+- **Get Users**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+  - `GET /api/v1/user`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "email": "string",
+        "name": "string",
+        "age": "number",
+        "gender": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
 
-## License
+- **Get User by ID**
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+  - `GET /api/v1/user/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "email": "string",
+      "name": "string",
+      "age": "number",
+      "gender": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update User**
+
+  - `PATCH /api/v1/user/:id`
+  - **Request Body:**
+    ```json
+    {
+      "email": "string",
+      "password": "string",
+      "name": "string",
+      "age": "number",
+      "gender": "string",
+      "roleId": "string",
+      "contactIds": ["string"],
+      "reviewIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete User**
+  - `DELETE /api/v1/user/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "User deleted successfully"
+    }
+    ```
+
+### Roles
+
+- **Create Role**
+
+  - `POST /api/v1/role`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "permissionIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Roles**
+
+  - `GET /api/v1/role`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Role by ID**
+
+  - `GET /api/v1/role/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Role**
+
+  - `PATCH /api/v1/role/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "permissionIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Role**
+  - `DELETE /api/v1/role/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Role deleted successfully"
+    }
+    ```
+
+### Permissions
+
+- **Create Permission**
+
+  - `POST /api/v1/permission`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "apiPath": "string",
+      "method": "string",
+      "module": "string",
+      "roleIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Permissions**
+
+  - `GET /api/v1/permission`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "apiPath": "string",
+        "method": "string",
+        "module": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Permission by ID**
+
+  - `GET /api/v1/permission/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "apiPath": "string",
+      "method": "string",
+      "module": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Permission**
+
+  - `PATCH /api/v1/permission/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "apiPath": "string",
+      "method": "string",
+      "module": "string",
+      "roleIds": ["string"]
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Permission**
+  - `DELETE /api/v1/permission/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Permission deleted successfully"
+    }
+    ```
+
+### Contacts
+
+- **Create Contact**
+
+  - `POST /api/v1/contact`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "phone": "string",
+      "address": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Contacts**
+
+  - `GET /api/v1/contact`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "phone": "string",
+        "address": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Contact by ID**
+
+  - `GET /api/v1/contact/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "phone": "string",
+      "address": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Contact**
+
+  - `PATCH /api/v1/contact/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "phone": "string",
+      "address": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Contact**
+  - `DELETE /api/v1/contact/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Contact deleted successfully"
+    }
+    ```
+
+### Products
+
+- **Create Product**
+
+  - `POST /api/v1/product`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "description": "string",
+      "productDetailIds": ["string"],
+      "categoryId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Products**
+
+  - `GET /api/v1/product`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Product by ID**
+
+  - `GET /api/v1/product/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Product**
+
+  - `PATCH /api/v1/product/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "description": "string",
+      "productDetailIds": ["string"],
+      "categoryId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Product**
+  - `DELETE /api/v1/product/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Product deleted successfully"
+    }
+    ```
+
+### Product Details
+
+- **Create Product Detail**
+
+  - `POST /api/v1/product-detail`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "value": "string",
+      "productId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Product Details**
+
+  - `GET /api/v1/product-detail`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "value": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Product Detail by ID**
+
+  - `GET /api/v1/product-detail/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "value": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Product Detail**
+
+  - `PATCH /api/v1/product-detail/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "value": "string",
+      "productId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Product Detail**
+  - `DELETE /api/v1/product-detail/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Product detail deleted successfully"
+    }
+    ```
+
+### Reviews
+
+- **Create Review**
+
+  - `POST /api/v1/review`
+  - **Request Body:**
+    ```json
+    {
+      "rating": "number",
+      "comment": "string",
+      "userId": "string",
+      "productId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Reviews**
+
+  - `GET /api/v1/review`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "rating": "number",
+        "comment": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Review by ID**
+
+  - `GET /api/v1/review/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "rating": "number",
+      "comment": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Review**
+
+  - `PATCH /api/v1/review/:id`
+  - **Request Body:**
+    ```json
+    {
+      "rating": "number",
+      "comment": "string",
+      "userId": "string",
+      "productId": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Review**
+  - `DELETE /api/v1/review/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Review deleted successfully"
+    }
+    ```
+
+### Categories
+
+- **Create Category**
+
+  - `POST /api/v1/category`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "description": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "createdAt": "date"
+    }
+    ```
+
+- **Get Categories**
+
+  - `GET /api/v1/category`
+  - **Response:**
+    ```json
+    [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    ]
+    ```
+
+- **Get Category by ID**
+
+  - `GET /api/v1/category/:id`
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Update Category**
+
+  - `PATCH /api/v1/category/:id`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "description": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "id": "string",
+      "updatedAt": "date"
+    }
+    ```
+
+- **Delete Category**
+  - `DELETE /api/v1/category/:id`
+  - **Response:**
+    ```json
+    {
+      "message": "Category deleted successfully"
+    }
+    ```

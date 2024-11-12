@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 
 export class CreatePermissionDto {
   @IsNotEmpty()
@@ -12,4 +12,9 @@ export class CreatePermissionDto {
 
   @IsNotEmpty()
   module: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID('all', { each: true })
+  roleIds: string[];
 }
