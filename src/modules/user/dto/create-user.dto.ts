@@ -4,9 +4,11 @@ import { CreateRoleDto } from '@/modules/role/dto/create-role.dto';
 import { Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
+  IsArray,
   IsEmail,
   IsNotEmpty,
   IsOptional,
+  IsUUID,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -29,11 +31,17 @@ export class CreateUserDto {
   @IsNotEmpty()
   gender: string;
 
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => CreateContactDto)
-  contacts: CreateContactDto[];
+  @IsOptional()
+  @IsArray()
+  @IsUUID('all', { each: true })
+  contactIds?: string[];
 
   @IsOptional()
-  roleName?: string = USER_ROLE;
+  @IsUUID()
+  roleId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID('all', { each: true })
+  reviewIds?: string[];
 }

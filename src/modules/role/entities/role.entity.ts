@@ -20,7 +20,7 @@ export class Role {
   @Column({ unique: true, nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @Column('text', { nullable: false })
   description: string;
 
   @Column()

@@ -1,12 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@/modules/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcrypt';
 import { Role } from '@/modules/role/entities/role.entity';
 import { PaginationDto } from '@/dto/pagination';
+import { USER_ROLE } from '@/modules/database/sample';
+import { Contact } from '@/modules/contact/entities/contact.entity';
+import { Review } from '@/modules/review/entities/review.entity';
 
 @Injectable()
 export class UserService {
@@ -15,6 +22,10 @@ export class UserService {
     private userRepository: Repository<User>,
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
+    @InjectRepository(Contact)
+    private contactRepository: Repository<Contact>,
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
   ) {}
 
   create = async (createUserDto: CreateUserDto) => {
@@ -24,18 +35,45 @@ export class UserService {
 
     createUserDto.password = this.hashPassword(createUserDto.password);
 
-    const { roleName, ...createUser } = createUserDto;
+    const role = createUserDto.roleId
+      ? await this.userRepository.findOneBy({
+          id: createUserDto.roleId,
+        })
+      : await this.userRepository.findOneBy({
+          name: USER_ROLE,
+        });
 
-    const role = await this.roleRepository.findOneBy({
-      name: roleName,
-    });
-
-    if (!role) {
-      throw new BadRequestException('Role không tồn tại');
+    if (createUserDto.roleId && !role) {
+      throw new NotFoundException('Role không tồn tại');
     }
 
-    const createdUser = this.userRepository.create({ ...createUser, role });
-    const record = await this.userRepository.save(createdUser);
+    const contacts = await this.contactRepository.find({
+      where: { id: In(createUserDto.contactIds) },
+    });
+    if (
+      createUserDto.contactIds &&
+      contacts.length !== createUserDto.contactIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều contact không tồn tại');
+    }
+    const reviews = await this.reviewRepository.find({
+      where: { id: In(createUserDto.reviewIds) },
+    });
+    if (
+      createUserDto.reviewIds &&
+      contacts.length !== createUserDto.reviewIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều review không tồn tại');
+    }
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      role,
+      contacts,
+      reviews,
+    });
+
+    const record = await this.userRepository.save(user);
 
     return {
       id: record.id,
@@ -44,64 +82,119 @@ export class UserService {
   };
 
   findAll = async ({ limit, page }: PaginationDto) => {
-    return this.userRepository.find({
-      take: limit,
+    const [data, totalRecords] = await this.userRepository.findAndCount({
       skip: (page - 1) * limit,
-      relations: ['role', 'contacts'],
+      take: limit,
+      relations: ['role', 'contacts', 'reviews'],
     });
+
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    return {
+      pagination: {
+        page,
+        limit,
+        totalRecords,
+        totalPages,
+      },
+      data,
+    };
   };
 
   findOne = async (id: string) => {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['contacts'],
-      select: {
-        contacts: true,
-      },
+      relations: ['contacts', 'role', 'reviews'],
     });
     if (!user) {
-      throw new BadRequestException('Người dùng không tồn tại');
+      throw new NotFoundException('Người dùng không tồn tại');
     }
     return user;
   };
 
   update = async (id: string, updateUserDto: UpdateUserDto) => {
-    if (!(await this.userRepository.findOneBy({ id }))) {
-      throw new BadRequestException('Người dùng không tồn tại');
+    const userUpdate = await this.userRepository.findOneBy({ id });
+    if (!userUpdate) {
+      throw new NotFoundException('Người dùng không tồn tại');
     }
 
-    const role = await this.roleRepository.findOneBy({
-      id: updateUserDto?.roleId,
-    });
+    const role = updateUserDto.roleId
+      ? await this.userRepository.findOneBy({
+          id: updateUserDto.roleId,
+        })
+      : await this.userRepository.findOneBy({
+          name: USER_ROLE,
+        });
+
     if (updateUserDto.roleId && !role) {
-      throw new BadRequestException('Role không tồn tại');
+      throw new NotFoundException('Role không tồn tại');
     }
 
-    return await this.userRepository.update(id, { ...updateUserDto, role });
+    const contacts = await this.contactRepository.find({
+      where: { id: In(updateUserDto.contactIds) },
+    });
+    if (
+      updateUserDto.contactIds &&
+      contacts.length !== updateUserDto.contactIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều contact không tồn tại');
+    }
+    const reviews = await this.reviewRepository.find({
+      where: { id: In(updateUserDto.reviewIds) },
+    });
+    if (
+      updateUserDto.reviewIds &&
+      contacts.length !== updateUserDto.reviewIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều review không tồn tại');
+    }
+    const user = this.userRepository.create({
+      ...updateUserDto,
+      contacts,
+      reviews,
+      role,
+    });
+    await this.userRepository.update(id, user);
+    return {
+      id: userUpdate.id,
+      updatedAt: userUpdate.updatedAt,
+    };
   };
 
   remove = async (id: string) => {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['contacts'],
+      relations: ['contacts', 'reviews', 'role'],
     });
     if (!user) {
-      throw new BadRequestException('Người dùng không tồn tại');
+      throw new NotFoundException('Người dùng không tồn tại');
     }
 
-    return await this.userRepository.softRemove(user);
+    const record = await this.userRepository.softRemove(user);
+    return {
+      id: record.id,
+      deletedAt: record.deletedAt,
+    };
   };
 
-  restore = async (id: string) => {
+  recover = async (id: string) => {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['contacts'],
+      relations: ['contacts', 'reviews', 'role'],
       withDeleted: true,
     });
     if (!user) {
-      throw new BadRequestException('Người dùng không tồn tại');
+      throw new NotFoundException('Người dùng không tồn tại');
     }
-    return await this.userRepository.recover(user);
+    if (user.deletedAt === null) {
+      throw new BadRequestException('Người dùng không bị xóa');
+    }
+
+    const record = await this.userRepository.recover(user);
+    return {
+      id: record.id,
+      recover: Date.now(),
+    };
   };
 
   // HASH PASSWORD

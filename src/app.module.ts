@@ -6,6 +6,10 @@ import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { ProductModule } from './modules/product/product.module';
+import { ProductDetailModule } from './modules/product-detail/product-detail.module';
+import { ReviewModule } from './modules/review/review.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -25,6 +29,10 @@ import { DatabaseModule } from './modules/database/database.module';
     PermissionModule,
     AuthModule,
     DatabaseModule,
+    ProductModule,
+    ProductDetailModule,
+    ReviewModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}

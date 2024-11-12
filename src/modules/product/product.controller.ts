@@ -10,23 +10,23 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ProductService } from './product.service';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from '@/dto/pagination';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller('product')
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() createProductDto: CreateProductDto) {
+    return this.productService.create(createProductDto);
   }
 
   @Get()
   findAll(@Query() query: PaginationDto) {
-    return this.userService.findAll(query);
+    return this.productService.findAll(query);
   }
 
   @Get(':id')
@@ -39,7 +39,7 @@ export class UserController {
     )
     id: string,
   ) {
-    return this.userService.findOne(id);
+    return this.productService.findOne(id);
   }
 
   @Patch(':id')
@@ -51,9 +51,9 @@ export class UserController {
       }),
     )
     id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    return this.productService.update(id, updateProductDto);
   }
 
   @Delete(':id')
@@ -66,6 +66,6 @@ export class UserController {
     )
     id: string,
   ) {
-    return this.userService.remove(id);
+    return this.productService.remove(id);
   }
 }

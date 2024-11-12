@@ -1,4 +1,5 @@
 import { Contact } from '@/modules/contact/entities/contact.entity';
+import { Review } from '@/modules/review/entities/review.entity';
 import { Role } from '@/modules/role/entities/role.entity';
 import {
   Column,
@@ -17,7 +18,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
   email: string;
 
   @Column({ select: false, nullable: false })
@@ -38,13 +39,18 @@ export class User {
   contacts: Relation<Contact[]>;
 
   @ManyToOne(() => Role, (role) => role.users)
-  role: Role;
+  role: Relation<Role>;
 
   @Column({ default: false })
   isActive: boolean;
 
   @Column({ nullable: true })
   refreshToken: string;
+
+  @OneToMany(() => Review, (review) => review.user, {
+    cascade: true,
+  })
+  reviews: Relation<Review[]>;
 
   @CreateDateColumn()
   createdAt: Date;

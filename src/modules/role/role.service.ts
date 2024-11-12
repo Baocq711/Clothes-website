@@ -24,10 +24,10 @@ export class RoleService {
     const role = this.rolesRepository.create(roleData);
     role.permissions = await this.getPermissions(createRoleDto.permissionIds);
 
-    const newRole = await this.rolesRepository.save(role);
+    const record = await this.rolesRepository.save(role);
     return {
-      id: newRole.id,
-      createdAt: newRole.createdAt,
+      id: record.id,
+      createdAt: record.createdAt,
     };
   };
 

@@ -10,23 +10,23 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CategoryService } from './category.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PaginationDto } from '@/dto/pagination';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller('category')
+export class CategoryController {
+  constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
   findAll(@Query() query: PaginationDto) {
-    return this.userService.findAll(query);
+    return this.categoryService.findAll(query);
   }
 
   @Get(':id')
@@ -39,7 +39,7 @@ export class UserController {
     )
     id: string,
   ) {
-    return this.userService.findOne(id);
+    return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
@@ -51,9 +51,9 @@ export class UserController {
       }),
     )
     id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
@@ -66,6 +66,6 @@ export class UserController {
     )
     id: string,
   ) {
-    return this.userService.remove(id);
+    return this.categoryService.remove(id);
   }
 }
