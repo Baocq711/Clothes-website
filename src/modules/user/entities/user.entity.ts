@@ -33,6 +33,13 @@ export class User {
   @Column({ nullable: false })
   gender: string;
 
+  @Column({ default: false })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  refreshToken: string;
+
+  // RELATION
   @OneToMany(() => Contact, (contact) => contact.user, {
     cascade: true,
   })
@@ -40,12 +47,6 @@ export class User {
 
   @ManyToOne(() => Role, (role) => role.users)
   role: Relation<Role>;
-
-  @Column({ default: false })
-  isActive: boolean;
-
-  @Column({ nullable: true })
-  refreshToken: string;
 
   @OneToMany(() => Review, (review) => review.user, {
     cascade: true,

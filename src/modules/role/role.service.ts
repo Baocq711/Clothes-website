@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,12 +11,15 @@ import { In, Repository } from 'typeorm';
 import { Permission } from '@/modules/permission/entities/permission.entity';
 import { PaginationDto } from '@/dto/pagination';
 import { isNotEmptyObject } from 'class-validator';
+import { User } from '@/modules/user/entities/user.entity';
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(Role) private rolesRepository: Repository<Role>,
     @InjectRepository(Permission)
     private permissionsRepository: Repository<Permission>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   create = async (createRoleDto: CreateRoleDto) => {
@@ -20,11 +27,33 @@ export class RoleService {
       throw new BadRequestException('Role đã tồn tại');
     }
 
-    const { permissionIds, ...roleData } = createRoleDto;
-    const role = this.rolesRepository.create(roleData);
-    role.permissions = await this.getPermissions(createRoleDto.permissionIds);
+    const permissions = await this.permissionsRepository.find({
+      where: { id: In(createRoleDto.permissionIds) },
+    });
+    if (
+      createRoleDto.permissionIds &&
+      permissions.length !== createRoleDto.permissionIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều permission không tồn tại');
+    }
+    const users = await this.usersRepository.find({
+      where: { id: In(createRoleDto.userIds) },
+    });
+    if (
+      createRoleDto.userIds &&
+      users.length !== createRoleDto.userIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều người dùng không tồn tại');
+    }
+
+    const role = this.rolesRepository.create({
+      ...createRoleDto,
+      permissions,
+      users,
+    });
 
     const record = await this.rolesRepository.save(role);
+
     return {
       id: record.id,
       createdAt: record.createdAt,
@@ -35,7 +64,7 @@ export class RoleService {
     const [data, totalRecords] = await this.rolesRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
-      relations: ['permissions'],
+      relations: ['permissions', 'users'],
     });
 
     const totalPages = Math.ceil(totalRecords / limit);
@@ -54,7 +83,7 @@ export class RoleService {
   findOne = async (id: string) => {
     const role = await this.rolesRepository.findOne({
       where: { id },
-      relations: ['permissions'],
+      relations: ['permissions', 'users'],
     });
     if (!role) {
       throw new BadRequestException('Role không tồn tại');
@@ -63,25 +92,42 @@ export class RoleService {
   };
 
   update = async (id: string, updateRoleDto: UpdateRoleDto) => {
-    const role = await this.rolesRepository.findOne({
+    const roleUpdate = await this.rolesRepository.findOne({
       where: { id },
-      relations: ['permissions'],
+      relations: ['permissions', 'users'],
     });
-    if (!role) {
-      throw new BadRequestException('Id không tồn tại');
+
+    const permissions = await this.permissionsRepository.find({
+      where: { id: In(updateRoleDto.permissionIds) },
+    });
+    if (
+      updateRoleDto.permissionIds &&
+      permissions.length !== updateRoleDto.permissionIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều permission không tồn tại');
+    }
+    const users = await this.usersRepository.find({
+      where: { id: In(updateRoleDto.userIds) },
+    });
+    if (
+      updateRoleDto.userIds &&
+      users.length !== updateRoleDto.userIds.length
+    ) {
+      throw new NotFoundException('Một hoặc nhiều người dùng không tồn tại');
     }
 
-    if (!isNotEmptyObject(updateRoleDto)) {
-      throw new BadRequestException('Không có dữ liệu để cập nhật');
-    }
+    const role = this.rolesRepository.create({
+      ...updateRoleDto,
+      permissions,
+      users,
+    });
 
-    const { permissionIds, ...roleData } = updateRoleDto;
-    const updateRole = this.rolesRepository.create(roleData);
-    updateRole.permissions = await this.getPermissions(
-      updateRoleDto.permissionIds,
-    );
+    await this.rolesRepository.update(id, role);
 
-    return await this.rolesRepository.update(id, updateRole);
+    return {
+      id: roleUpdate.id,
+      updatedAt: roleUpdate.updatedAt,
+    };
   };
 
   remove = async (id: string) => {

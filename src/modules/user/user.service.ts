@@ -36,10 +36,10 @@ export class UserService {
     createUserDto.password = this.hashPassword(createUserDto.password);
 
     const role = createUserDto.roleId
-      ? await this.userRepository.findOneBy({
+      ? await this.roleRepository.findOneBy({
           id: createUserDto.roleId,
         })
-      : await this.userRepository.findOneBy({
+      : await this.roleRepository.findOneBy({
           name: USER_ROLE,
         });
 
@@ -119,10 +119,10 @@ export class UserService {
     }
 
     const role = updateUserDto.roleId
-      ? await this.userRepository.findOneBy({
+      ? await this.roleRepository.findOneBy({
           id: updateUserDto.roleId,
         })
-      : await this.userRepository.findOneBy({
+      : await this.roleRepository.findOneBy({
           name: USER_ROLE,
         });
 

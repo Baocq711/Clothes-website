@@ -27,4 +27,8 @@ export class CreateRoleDto {
   @IsArray()
   @IsUUID('all', { each: true })
   permissionIds: string[];
+
+  @IsArray()
+  @IsUUID('all', { each: true })
+  userIds: string[];
 }

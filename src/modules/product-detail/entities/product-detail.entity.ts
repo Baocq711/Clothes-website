@@ -1,10 +1,13 @@
 import { Product } from '@/modules/product/entities/product.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -26,4 +29,13 @@ export class ProductDetail {
 
   @ManyToOne(() => Product, (product) => product.productDetails)
   product: Relation<Product>;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
