@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '@/modules/category/entities/category.entity';
 import { In, Repository } from 'typeorm';
 import { Product } from '@/modules/product/entities/product.entity';
 import { PaginationDto } from '@/dto/pagination';
+import { CreateCategoryDto } from '@/modules/category/dto/create-category.dto';
+import { UpdateCategoryDto } from '@/modules/category/dto/update-category.dto';
 
 @Injectable()
 export class CategoryService {

@@ -9,10 +9,10 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { ContactService } from './contact.service';
-import { CreateContactDto } from './dto/create-contact.dto';
-import { UpdateContactDto } from './dto/update-contact.dto';
 import { ResponseMessage } from '@/decorators/message';
+import { ContactService } from '@/modules/contact/contact.service';
+import { CreateContactDto } from '@/modules/contact/dto/create-contact.dto';
+import { UpdateContactDto } from '@/modules/contact/dto/update-contact.dto';
 
 @Controller('contact')
 export class ContactController {

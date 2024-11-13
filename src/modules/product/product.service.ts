@@ -3,8 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '@/modules/product/entities/product.entity';
 import { In, Repository } from 'typeorm';
@@ -12,6 +10,8 @@ import { ProductDetail } from '@/modules/product-detail/entities/product-detail.
 import { Category } from '@/modules/category/entities/category.entity';
 import { Review } from '@/modules/review/entities/review.entity';
 import { PaginationDto } from '@/dto/pagination';
+import { CreateProductDto } from '@/modules/product/dto/create-product.dto';
+import { UpdateProductDto } from '@/modules/product/dto/update-product.dto';
 
 @Injectable()
 export class ProductService {

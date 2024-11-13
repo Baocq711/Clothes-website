@@ -10,11 +10,11 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { RoleService } from './role.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '@/dto/pagination';
 import { ResponseMessage } from '@/decorators/message';
+import { RoleService } from '@/modules/role/role.service';
+import { CreateRoleDto } from '@/modules/role/dto/create-role.dto';
+import { UpdateRoleDto } from '@/modules/role/dto/update-role.dto';
 
 @Controller('role')
 export class RoleController {

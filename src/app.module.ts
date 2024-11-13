@@ -1,15 +1,16 @@
-import { Module, CacheModule } from '@nestjs/common';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { CategoryModule } from '@/modules/category/category.module';
+import { ContactModule } from '@/modules/contact/contact.module';
+import { DatabaseModule } from '@/modules/database/database.module';
+import { PermissionModule } from '@/modules/permission/permission.module';
+import { ProductDetailModule } from '@/modules/product-detail/product-detail.module';
+import { ProductModule } from '@/modules/product/product.module';
+import { ReviewModule } from '@/modules/review/review.module';
+import { RoleModule } from '@/modules/role/role.module';
+import { UserModule } from '@/modules/user/user.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './modules/user/user.module';
-import { ContactModule } from './modules/contact/contact.module';
-import { RoleModule } from './modules/role/role.module';
-import { PermissionModule } from './modules/permission/permission.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { DatabaseModule } from './modules/database/database.module';
-import { ProductModule } from './modules/product/product.module';
-import { ProductDetailModule } from './modules/product-detail/product-detail.module';
-import { ReviewModule } from './modules/review/review.module';
-import { CategoryModule } from './modules/category/category.module';
 import ms from 'ms';
 
 @Module({
@@ -27,7 +28,9 @@ import ms from 'ms';
     CacheModule.register({
       ttl: ms(process.env.CACHE_EXPIRES) / 1000, // Cache TTL in seconds
       max: +process.env.CACHE_MAX, // Maximum number of items in cache
+      isGlobal: true,
     }),
+
     UserModule,
     ContactModule,
     RoleModule,

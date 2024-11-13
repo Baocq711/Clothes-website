@@ -4,8 +4,6 @@ import {
   BadRequestException,
   Inject,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@/modules/user/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,6 +14,8 @@ import { USER_ROLE } from '@/modules/database/sample';
 import { Contact } from '@/modules/contact/entities/contact.entity';
 import { Review } from '@/modules/review/entities/review.entity';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
+import { UpdateUserDto } from '@/modules/user/dto/update-user.dto';
 
 @Injectable()
 export class UserService {

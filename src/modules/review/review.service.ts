@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
 import { User } from '@/modules/user/entities/user.entity';
 import { Product } from '@/modules/product/entities/product.entity';
 import { PaginationDto } from '@/dto/pagination';
+import { CreateReviewDto } from '@/modules/review/dto/create-review.dto';
+import { Review } from '@/modules/review/entities/review.entity';
+import { UpdateReviewDto } from '@/modules/review/dto/update-review.dto';
 
 @Injectable()
 export class ReviewService {

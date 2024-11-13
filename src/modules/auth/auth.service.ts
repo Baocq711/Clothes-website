@@ -1,12 +1,9 @@
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import { UserService } from '@/modules/user/user.service';
-import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AxiosError, AxiosResponse } from 'axios';
 import { Response } from 'express';
 import ms from 'ms';
-import { catchError, firstValueFrom, map, Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService {

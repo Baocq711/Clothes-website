@@ -10,26 +10,26 @@ import {
   BadRequestException,
   Query,
 } from '@nestjs/common';
-import { ProductDetailService } from './product-detail.service';
-import { CreateProductDetailDto } from './dto/create-product-detail.dto';
-import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { PaginationDto } from '@/dto/pagination';
 import { ResponseMessage } from '@/decorators/message';
+import { PermissionService } from '@/modules/permission/permission.service';
+import { CreatePermissionDto } from '@/modules/permission/dto/create-permission.dto';
+import { UpdatePermissionDto } from '@/modules/permission/dto/update-permission.dto';
 
-@Controller('product-detail')
-export class ProductDetailController {
-  constructor(private readonly productDetailService: ProductDetailService) {}
+@Controller('permission')
+export class PermissionController {
+  constructor(private readonly permissionService: PermissionService) {}
 
   @Post()
   @ResponseMessage('Tạo chi tiết sản phẩm thành công')
-  create(@Body() createProductDetailDto: CreateProductDetailDto) {
-    return this.productDetailService.create(createProductDetailDto);
+  create(@Body() createPermissionDto: CreatePermissionDto) {
+    return this.permissionService.create(createPermissionDto);
   }
 
   @Get()
   @ResponseMessage('Lấy danh sách chi tiết sản phẩm thành công')
   findAll(@Query() query: PaginationDto) {
-    return this.productDetailService.findAll(query);
+    return this.permissionService.findAll(query);
   }
 
   @Get(':id')
@@ -43,7 +43,7 @@ export class ProductDetailController {
     )
     id: string,
   ) {
-    return this.productDetailService.findOne(id);
+    return this.permissionService.findOne(id);
   }
 
   @Patch(':id')
@@ -56,9 +56,9 @@ export class ProductDetailController {
       }),
     )
     id: string,
-    @Body() updateProductDetailDto: UpdateProductDetailDto,
+    @Body() updatePermissionDto: UpdatePermissionDto,
   ) {
-    return this.productDetailService.update(id, updateProductDetailDto);
+    return this.permissionService.update(id, updatePermissionDto);
   }
 
   @Delete(':id')
@@ -72,6 +72,6 @@ export class ProductDetailController {
     )
     id: string,
   ) {
-    return this.productDetailService.remove(id);
+    return this.permissionService.remove(id);
   }
 }

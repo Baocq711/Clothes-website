@@ -10,11 +10,11 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PaginationDto } from '@/dto/pagination';
 import { ResponseMessage } from '@/decorators/message';
+import { CategoryService } from '@/modules/category/category.service';
+import { CreateCategoryDto } from '@/modules/category/dto/create-category.dto';
+import { UpdateCategoryDto } from '@/modules/category/dto/update-category.dto';
 
 @Controller('category')
 export class CategoryController {

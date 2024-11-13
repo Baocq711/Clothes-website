@@ -3,14 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '@/modules/role/entities/role.entity';
 import { In, Repository } from 'typeorm';
 import { Permission } from '@/modules/permission/entities/permission.entity';
 import { PaginationDto } from '@/dto/pagination';
 import { User } from '@/modules/user/entities/user.entity';
+import { CreateRoleDto } from '@/modules/role/dto/create-role.dto';
+import { UpdateRoleDto } from '@/modules/role/dto/update-role.dto';
+
 @Injectable()
 export class RoleService {
   constructor(

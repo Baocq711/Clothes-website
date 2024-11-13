@@ -1,18 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { User } from '@/modules/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from '@/modules/role/entities/role.entity';
 import { Contact } from '@/modules/contact/entities/contact.entity';
 import { Review } from '@/modules/review/entities/review.entity';
-import { CacheModule } from '@nestjs/cache-manager';
+import { UserController } from '@/modules/user/user.controller';
+import { UserService } from '@/modules/user/user.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Role, Contact, Review]),
-    CacheModule.register(),
-  ],
+  imports: [TypeOrmModule.forFeature([User, Role, Contact, Review])],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

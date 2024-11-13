@@ -7,7 +7,6 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { Public } from '@/decorators/public';
 import { LocalAuthGuard } from '@/modules/auth/local-auth.guard';
 import { ResponseMessage } from '@/decorators/message';
@@ -15,6 +14,7 @@ import { Request, Response } from 'express';
 import { DUser } from '@/decorators/user';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import { UserService } from '@/modules/user/user.service';
+import { AuthService } from '@/modules/auth/auth.service';
 
 @Controller('auth')
 export class AuthController {

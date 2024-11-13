@@ -1,4 +1,4 @@
+import { CreateContactDto } from '@/modules/contact/dto/create-contact.dto';
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateContactDto } from './create-contact.dto';
 
 export class UpdateContactDto extends PartialType(CreateContactDto) {}

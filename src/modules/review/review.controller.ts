@@ -10,11 +10,11 @@ import {
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
-import { ReviewService } from './review.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
 import { PaginationDto } from '@/dto/pagination';
 import { ResponseMessage } from '@/decorators/message';
+import { ReviewService } from '@/modules/review/review.service';
+import { CreateReviewDto } from '@/modules/review/dto/create-review.dto';
+import { UpdateReviewDto } from '@/modules/review/dto/update-review.dto';
 
 @Controller('review')
 export class ReviewController {

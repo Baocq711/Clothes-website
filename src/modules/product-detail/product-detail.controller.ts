@@ -10,10 +10,10 @@ import {
   BadRequestException,
   Query,
 } from '@nestjs/common';
-import { ProductDetailService } from './product-detail.service';
-import { CreateProductDetailDto } from './dto/create-product-detail.dto';
-import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ProductDetailService } from '@/modules/product-detail/product-detail.service';
+import { CreateProductDetailDto } from '@/modules/product-detail/dto/create-product-detail.dto';
+import { UpdateProductDetailDto } from '@/modules/product-detail/dto/update-product-detail.dto';
 
 @Controller('product-detail')
 export class ProductDetailController {

@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Permission } from '@/modules/permission/entities/permission.entity';
 import { In, Repository } from 'typeorm';
 import { PaginationDto } from '@/dto/pagination';
 import { Role } from '@/modules/role/entities/role.entity';
+import { CreatePermissionDto } from '@/modules/permission/dto/create-permission.dto';
+import { UpdatePermissionDto } from '@/modules/permission/dto/update-permission.dto';
 
 @Injectable()
 export class PermissionService {
