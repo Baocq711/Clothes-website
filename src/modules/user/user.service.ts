@@ -2,6 +2,7 @@ import {
   NotFoundException,
   Injectable,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,6 +15,7 @@ import { PaginationDto } from '@/dto/pagination';
 import { USER_ROLE } from '@/modules/database/sample';
 import { Contact } from '@/modules/contact/entities/contact.entity';
 import { Review } from '@/modules/review/entities/review.entity';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UserService {
@@ -26,6 +28,8 @@ export class UserService {
     private contactRepository: Repository<Contact>,
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
 
   create = async (createUserDto: CreateUserDto) => {
@@ -118,13 +122,22 @@ export class UserService {
       throw new NotFoundException('Người dùng không tồn tại');
     }
 
+    const userRole = await this.cacheManager.get<Role>('userRole');
+
     const role = updateUserDto.roleId
       ? await this.roleRepository.findOneBy({
           id: updateUserDto.roleId,
         })
-      : await this.roleRepository.findOneBy({
-          name: USER_ROLE,
-        });
+      : userRole
+        ? userRole
+        : await this.roleRepository
+            .findOneBy({
+              name: USER_ROLE,
+            })
+            .then((role) => {
+              this.cacheManager.set('userRole', role);
+              return role;
+            });
 
     if (updateUserDto.roleId && !role) {
       throw new NotFoundException('Role không tồn tại');

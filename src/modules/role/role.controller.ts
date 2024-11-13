@@ -14,22 +14,26 @@ import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ResponseMessage } from '@/decorators/message';
 
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @ResponseMessage('Tạo vai trò thành công')
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
   }
 
   @Get()
+  @ResponseMessage('Lấy danh sách vai trò thành công')
   findAll(@Query() query: PaginationDto) {
     return this.roleService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Lấy thông tin vai trò thành công')
   findOne(
     @Param(
       'id',
@@ -43,6 +47,7 @@ export class RoleController {
   }
 
   @Patch(':id')
+  @ResponseMessage('Cập nhật thông tin vai trò thành công')
   update(
     @Param(
       'id',
@@ -57,6 +62,7 @@ export class RoleController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Xóa vai trò thành công')
   remove(
     @Param(
       'id',

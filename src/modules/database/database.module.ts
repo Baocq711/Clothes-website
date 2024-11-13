@@ -6,9 +6,14 @@ import { Permission } from '@/modules/permission/entities/permission.entity';
 import { Role } from '@/modules/role/entities/role.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { UserModule } from '@/modules/user/user.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Permission, Role, User]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Permission, Role, User]),
+    UserModule,
+    CacheModule.register(),
+  ],
   controllers: [DatabaseController],
   providers: [DatabaseService],
 })

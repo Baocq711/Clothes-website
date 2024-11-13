@@ -1,12 +1,12 @@
-# Clothes Website
+# Project Name
 
-## Installation
+## Installation and Running
 
 1. Clone the repository:
 
    ```sh
    git clone <repository-url>
-   cd clothes-website
+   cd <repository-directory>
    ```
 
 2. Install dependencies:
@@ -15,763 +15,1088 @@
    npm install
    ```
 
-3. Set up the environment variables:
+3. Set up environment variables:
+
    - Create a [.env](http://_vscodecontentref_/1) file in the root directory.
-   - Add the following environment variables:
-     ```env
-     DB_HOST=<your-database-host>
-     DB_PORT=<your-database-port>
-     DB_USER=<your-database-username>
-     DB_PASS=<your-database-password>
-     DB_NAME=<your-database-name>
-     ACCESS_TOKEN_SECRET=<your-access-token-secret>
-     ACCESS_TOKEN_EXPIRES=<access-token-expiry-time>
-     REFRESH_TOKEN_SECRET=<your-refresh-token-secret>
-     REFRESH_TOKEN_EXPIRES=<refresh-token-expiry-time>
-     INIT_PASSWORD=<initial-password>
-     SHOULD_INIT=true
-     ```
+   - Add the necessary environment variables as specified in `.env.example`.
 
-## Starting the Application
+4. Run the application:
 
-1. Start the application in development mode:
+   ```sh
+   npm run start
+   ```
+
+5. For development mode with hot-reloading:
 
    ```sh
    npm run dev
    ```
 
-2. Start the application in production mode:
+6. To run tests:
    ```sh
-   npm run start:prod
+   npm run test
    ```
 
 ## API Endpoints
 
-### Auth
+## Authentication
 
-- **Sign Up**
+### Sign In
 
-  - `POST /api/v1/auth/signup`
-  - **Request Body:**
-    ```json
-    {
-      "email": "string",
-      "password": "string",
-      "name": "string",
-      "age": "number",
-      "gender": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "createdAt": "date"
-    }
-    ```
-
-- **Sign In**
-
-  - `POST /api/v1/auth/signin`
-  - **Request Body:**
-    ```json
-    {
-      "email": "string",
-      "password": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/auth/signin`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "username": "string",
+    "password": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Đăng nhập thành công",
+    "data": {
       "access_token": "string"
     }
-    ```
+  }
+  ```
 
-- **Sign Out**
+### Sign Up
 
-  - `POST /api/v1/auth/signout`
-  - **Response:**
-    ```json
-    {
-      "message": "Đăng xuất thành công"
+- **URL:** `/api/v1/auth/signup`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "username": "string",
+    "password": "string",
+    "email": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Đăng ký thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Refresh Token**
+### Refresh Token
 
-  - `GET /api/v1/auth/refresh`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/auth/refresh`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <refresh_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy access token mới thành công",
+    "data": {
       "access_token": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Profile**
-  - `GET /api/v1/auth/account`
-  - **Response:**
-    ```json
-    {
+### Get Profile
+
+- **URL:** `/api/v1/auth/account`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin tài khoản thành công",
+    "data": {
       "id": "string",
+      "username": "string",
       "email": "string",
-      "name": "string",
-      "age": "number",
-      "gender": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-### Users
+## User
 
-- **Create User**
+### Create User
 
-  - `POST /api/v1/user`
-  - **Request Body:**
-    ```json
-    {
-      "email": "string",
-      "password": "string",
-      "name": "string",
-      "age": "number",
-      "gender": "string",
-      "roleId": "string",
-      "contactIds": ["string"],
-      "reviewIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/user`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "email": "string",
+    "password": "string",
+    "name": "string",
+    "age": "number",
+    "gender": "string",
+    "contactIds": ["string"],
+    "roleId": "string",
+    "reviewIds": ["string"]
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo tài khoản thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Users**
+### Get Users
 
-  - `GET /api/v1/user`
-  - **Response:**
-    ```json
-    [
+- **URL:** `/api/v1/user`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách tài khoản thành công",
+    "data": [
       {
         "id": "string",
         "email": "string",
         "name": "string",
         "age": "number",
         "gender": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
+        "createdAt": "string"
       }
     ]
-    ```
+  }
+  ```
 
-- **Get User by ID**
+### Get User by ID
 
-  - `GET /api/v1/user/:id`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/user/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin tài khoản thành công",
+    "data": {
       "id": "string",
       "email": "string",
       "name": "string",
       "age": "number",
       "gender": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Update User**
+### Update User
 
-  - `PATCH /api/v1/user/:id`
-  - **Request Body:**
-    ```json
-    {
-      "email": "string",
-      "password": "string",
-      "name": "string",
-      "age": "number",
-      "gender": "string",
-      "roleId": "string",
-      "contactIds": ["string"],
-      "reviewIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/user/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "email": "string",
+    "password": "string",
+    "name": "string",
+    "age": "number",
+    "gender": "string",
+    "contactIds": ["string"],
+    "roleId": "string",
+    "reviewIds": ["string"]
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin tài khoản thành công",
+    "data": {
       "id": "string",
-      "updatedAt": "date"
+      "updatedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Delete User**
-  - `DELETE /api/v1/user/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "User deleted successfully"
-    }
-    ```
+### Delete User
 
-### Roles
-
-- **Create Role**
-
-  - `POST /api/v1/role`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "permissionIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/user/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa tài khoản thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "deletedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Roles**
+## Product
 
-  - `GET /api/v1/role`
-  - **Response:**
-    ```json
-    [
+### Create Product
+
+- **URL:** `/api/v1/product`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string",
+    "price": "number"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo sản phẩm thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Products
+
+- **URL:** `/api/v1/product`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách sản phẩm thành công",
+    "data": [
       {
         "id": "string",
         "name": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
+        "description": "string",
+        "price": "number",
+        "createdAt": "string"
       }
     ]
-    ```
+  }
+  ```
 
-- **Get Role by ID**
+### Get Product by ID
 
-  - `GET /api/v1/role/:id`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/product/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin sản phẩm thành công",
+    "data": {
       "id": "string",
       "name": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "description": "string",
+      "price": "number",
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Update Role**
+### Update Product
 
-  - `PATCH /api/v1/role/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "permissionIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/product/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string",
+    "price": "number"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin sản phẩm thành công",
+    "data": {
       "id": "string",
-      "updatedAt": "date"
+      "updatedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Delete Role**
-  - `DELETE /api/v1/role/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Role deleted successfully"
-    }
-    ```
+### Delete Product
 
-### Permissions
-
-- **Create Permission**
-
-  - `POST /api/v1/permission`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "apiPath": "string",
-      "method": "string",
-      "module": "string",
-      "roleIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/product/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa sản phẩm thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "deletedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Permissions**
+## Product Detail
 
-  - `GET /api/v1/permission`
-  - **Response:**
-    ```json
-    [
+### Create Product Detail
+
+- **URL:** `/api/v1/product-detail`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "productId": "string",
+    "color": "string",
+    "size": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo chi tiết sản phẩm thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Product Details
+
+- **URL:** `/api/v1/product-detail`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách chi tiết sản phẩm thành công",
+    "data": [
+      {
+        "id": "string",
+        "productId": "string",
+        "color": "string",
+        "size": "string",
+        "createdAt": "string"
+      }
+    ]
+  }
+  ```
+
+### Get Product Detail by ID
+
+- **URL:** `/api/v1/product-detail/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin chi tiết sản phẩm thành công",
+    "data": {
+      "id": "string",
+      "productId": "string",
+      "color": "string",
+      "size": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Update Product Detail
+
+- **URL:** `/api/v1/product-detail/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "productId": "string",
+    "color": "string",
+    "size": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin chi tiết sản phẩm thành công",
+    "data": {
+      "id": "string",
+      "updatedAt": "string"
+    }
+  }
+  ```
+
+### Delete Product Detail
+
+- **URL:** `/api/v1/product-detail/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa chi tiết sản phẩm thành công",
+    "data": {
+      "id": "string",
+      "deletedAt": "string"
+    }
+  }
+  ```
+
+## Category
+
+### Create Category
+
+- **URL:** `/api/v1/category`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo danh mục thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Categories
+
+- **URL:** `/api/v1/category`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách danh mục thành công",
+    "data": [
       {
         "id": "string",
         "name": "string",
-        "apiPath": "string",
-        "method": "string",
-        "module": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
+        "description": "string",
+        "createdAt": "string"
       }
     ]
-    ```
+  }
+  ```
 
-- **Get Permission by ID**
+### Get Category by ID
 
-  - `GET /api/v1/permission/:id`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/category/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin danh mục thành công",
+    "data": {
       "id": "string",
       "name": "string",
-      "apiPath": "string",
-      "method": "string",
-      "module": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "description": "string",
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Update Permission**
+### Update Category
 
-  - `PATCH /api/v1/permission/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "apiPath": "string",
-      "method": "string",
-      "module": "string",
-      "roleIds": ["string"]
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/category/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin danh mục thành công",
+    "data": {
       "id": "string",
-      "updatedAt": "date"
+      "updatedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Delete Permission**
-  - `DELETE /api/v1/permission/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Permission deleted successfully"
-    }
-    ```
+### Delete Category
 
-### Contacts
-
-- **Create Contact**
-
-  - `POST /api/v1/contact`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "phone": "string",
-      "address": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/category/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa danh mục thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "deletedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Contacts**
+## Review
 
-  - `GET /api/v1/contact`
-  - **Response:**
-    ```json
-    [
+### Create Review
+
+- **URL:** `/api/v1/review`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "rating": "number",
+    "comment": "string",
+    "userId": "string",
+    "productId": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo đánh giá thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Reviews
+
+- **URL:** `/api/v1/review`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách đánh giá thành công",
+    "data": [
+      {
+        "id": "string",
+        "rating": "number",
+        "comment": "string",
+        "userId": "string",
+        "productId": "string",
+        "createdAt": "string"
+      }
+    ]
+  }
+  ```
+
+### Get Review by ID
+
+- **URL:** `/api/v1/review/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin đánh giá thành công",
+    "data": {
+      "id": "string",
+      "rating": "number",
+      "comment": "string",
+      "userId": "string",
+      "productId": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Update Review
+
+- **URL:** `/api/v1/review/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "rating": "number",
+    "comment": "string",
+    "userId": "string",
+    "productId": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin đánh giá thành công",
+    "data": {
+      "id": "string",
+      "updatedAt": "string"
+    }
+  }
+  ```
+
+### Delete Review
+
+- **URL:** `/api/v1/review/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa đánh giá thành công",
+    "data": {
+      "id": "string",
+      "deletedAt": "string"
+    }
+  }
+  ```
+
+## Contact
+
+### Create Contact
+
+- **URL:** `/api/v1/contact`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "phone": "string",
+    "address": "string",
+    "userId": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo liên hệ thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Contacts
+
+- **URL:** `/api/v1/contact`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách liên hệ thành công",
+    "data": [
       {
         "id": "string",
         "name": "string",
         "phone": "string",
         "address": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
+        "userId": "string",
+        "createdAt": "string"
       }
     ]
-    ```
+  }
+  ```
 
-- **Get Contact by ID**
+### Get Contact by ID
 
-  - `GET /api/v1/contact/:id`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/contact/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin liên hệ thành công",
+    "data": {
       "id": "string",
       "name": "string",
       "phone": "string",
       "address": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "userId": "string",
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Update Contact**
+### Update Contact
 
-  - `PATCH /api/v1/contact/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "phone": "string",
-      "address": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/contact/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "phone": "string",
+    "address": "string",
+    "userId": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin liên hệ thành công",
+    "data": {
       "id": "string",
-      "updatedAt": "date"
+      "updatedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Delete Contact**
-  - `DELETE /api/v1/contact/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Contact deleted successfully"
-    }
-    ```
+### Delete Contact
 
-### Products
-
-- **Create Product**
-
-  - `POST /api/v1/product`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "description": "string",
-      "productDetailIds": ["string"],
-      "categoryId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/contact/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa liên hệ thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "deletedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Products**
+## Role
 
-  - `GET /api/v1/product`
-  - **Response:**
-    ```json
-    [
+### Create Role
+
+- **URL:** `/api/v1/role`
+- **Method:** `POST`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 201,
+    "message": "Tạo vai trò thành công",
+    "data": {
+      "id": "string",
+      "createdAt": "string"
+    }
+  }
+  ```
+
+### Get Roles
+
+- **URL:** `/api/v1/role`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy danh sách vai trò thành công",
+    "data": [
       {
         "id": "string",
         "name": "string",
         "description": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
+        "createdAt": "string"
       }
     ]
-    ```
+  }
+  ```
 
-- **Get Product by ID**
+### Get Role by ID
 
-  - `GET /api/v1/product/:id`
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/role/:id`
+- **Method:** `GET`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Lấy thông tin vai trò thành công",
+    "data": {
       "id": "string",
       "name": "string",
       "description": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
+      "createdAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Update Product**
+### Update Role
 
-  - `PATCH /api/v1/product/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "description": "string",
-      "productDetailIds": ["string"],
-      "categoryId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/role/:id`
+- **Method:** `PATCH`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Cập nhật thông tin vai trò thành công",
+    "data": {
       "id": "string",
-      "updatedAt": "date"
+      "updatedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Delete Product**
-  - `DELETE /api/v1/product/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Product deleted successfully"
-    }
-    ```
+### Delete Role
 
-### Product Details
-
-- **Create Product Detail**
-
-  - `POST /api/v1/product-detail`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "value": "string",
-      "productId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
+- **URL:** `/api/v1/role/:id`
+- **Method:** `DELETE`
+- **Headers:**
+  ```json
+  {
+    "Authorization": "Bearer <access_token>"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Xóa vai trò thành công",
+    "data": {
       "id": "string",
-      "createdAt": "date"
+      "deletedAt": "string"
     }
-    ```
+  }
+  ```
 
-- **Get Product Details**
+## Note
 
-  - `GET /api/v1/product-detail`
-  - **Response:**
-    ```json
-    [
-      {
-        "id": "string",
-        "name": "string",
-        "value": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
-      }
-    ]
-    ```
-
-- **Get Product Detail by ID**
-
-  - `GET /api/v1/product-detail/:id`
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "name": "string",
-      "value": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Update Product Detail**
-
-  - `PATCH /api/v1/product-detail/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "value": "string",
-      "productId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Delete Product Detail**
-  - `DELETE /api/v1/product-detail/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Product detail deleted successfully"
-    }
-    ```
-
-### Reviews
-
-- **Create Review**
-
-  - `POST /api/v1/review`
-  - **Request Body:**
-    ```json
-    {
-      "rating": "number",
-      "comment": "string",
-      "userId": "string",
-      "productId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "createdAt": "date"
-    }
-    ```
-
-- **Get Reviews**
-
-  - `GET /api/v1/review`
-  - **Response:**
-    ```json
-    [
-      {
-        "id": "string",
-        "rating": "number",
-        "comment": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
-      }
-    ]
-    ```
-
-- **Get Review by ID**
-
-  - `GET /api/v1/review/:id`
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "rating": "number",
-      "comment": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Update Review**
-
-  - `PATCH /api/v1/review/:id`
-  - **Request Body:**
-    ```json
-    {
-      "rating": "number",
-      "comment": "string",
-      "userId": "string",
-      "productId": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Delete Review**
-  - `DELETE /api/v1/review/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Review deleted successfully"
-    }
-    ```
-
-### Categories
-
-- **Create Category**
-
-  - `POST /api/v1/category`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "description": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "createdAt": "date"
-    }
-    ```
-
-- **Get Categories**
-
-  - `GET /api/v1/category`
-  - **Response:**
-    ```json
-    [
-      {
-        "id": "string",
-        "name": "string",
-        "description": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
-      }
-    ]
-    ```
-
-- **Get Category by ID**
-
-  - `GET /api/v1/category/:id`
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "name": "string",
-      "description": "string",
-      "createdAt": "date",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Update Category**
-
-  - `PATCH /api/v1/category/:id`
-  - **Request Body:**
-    ```json
-    {
-      "name": "string",
-      "description": "string"
-    }
-    ```
-  - **Response:**
-    ```json
-    {
-      "id": "string",
-      "updatedAt": "date"
-    }
-    ```
-
-- **Delete Category**
-  - `DELETE /api/v1/category/:id`
-  - **Response:**
-    ```json
-    {
-      "message": "Category deleted successfully"
-    }
-    ```
+- All responses follow the structure defined in `TransformInterceptor`:
+  ```json
+  {
+    "statusCode": number,
+    "message": string,
+    "data": T extends Object
+  }
+  ```

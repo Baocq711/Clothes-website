@@ -14,22 +14,26 @@ import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ResponseMessage } from '@/decorators/message';
 
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @Post()
+  @ResponseMessage('Tạo đánh giá thành công')
   create(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewService.create(createReviewDto);
   }
 
   @Get()
+  @ResponseMessage('Lấy danh sách đánh giá thành công')
   findAll(@Query() query: PaginationDto) {
     return this.reviewService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Lấy thông tin đánh giá thành công')
   findOne(
     @Param(
       'id',
@@ -43,6 +47,7 @@ export class ReviewController {
   }
 
   @Patch(':id')
+  @ResponseMessage('Cập nhật thông tin đánh giá thành công')
   update(
     @Param(
       'id',
@@ -57,6 +62,7 @@ export class ReviewController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Xóa đánh giá thành công')
   remove(
     @Param(
       'id',

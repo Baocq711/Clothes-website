@@ -47,8 +47,8 @@ export class AuthController {
     return this.authService.signup(createUserDto);
   }
 
-  @ResponseMessage('Lấy thông tin tài khoản thành công')
   @Get('account')
+  @ResponseMessage('Lấy thông tin tài khoản thành công')
   getProfile(@DUser() user: UserByAccessToken) {
     return this.userService.findOne(user.id);
   }

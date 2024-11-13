@@ -6,30 +6,34 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   ParseUUIDPipe,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
-import { PermissionService } from './permission.service';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { ProductDetailService } from './product-detail.service';
+import { CreateProductDetailDto } from './dto/create-product-detail.dto';
+import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ResponseMessage } from '@/decorators/message';
 
-@Controller('permission')
-export class PermissionController {
-  constructor(private readonly permissionService: PermissionService) {}
+@Controller('product-detail')
+export class ProductDetailController {
+  constructor(private readonly productDetailService: ProductDetailService) {}
 
   @Post()
-  create(@Body() createPermissionDto: CreatePermissionDto) {
-    return this.permissionService.create(createPermissionDto);
+  @ResponseMessage('Tạo chi tiết sản phẩm thành công')
+  create(@Body() createProductDetailDto: CreateProductDetailDto) {
+    return this.productDetailService.create(createProductDetailDto);
   }
 
   @Get()
+  @ResponseMessage('Lấy danh sách chi tiết sản phẩm thành công')
   findAll(@Query() query: PaginationDto) {
-    return this.permissionService.findAll(query);
+    return this.productDetailService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Lấy thông tin chi tiết sản phẩm thành công')
   findOne(
     @Param(
       'id',
@@ -39,10 +43,11 @@ export class PermissionController {
     )
     id: string,
   ) {
-    return this.permissionService.findOne(id);
+    return this.productDetailService.findOne(id);
   }
 
   @Patch(':id')
+  @ResponseMessage('Cập nhật thông tin chi tiết sản phẩm thành công')
   update(
     @Param(
       'id',
@@ -51,12 +56,13 @@ export class PermissionController {
       }),
     )
     id: string,
-    @Body() updatePermissionDto: UpdatePermissionDto,
+    @Body() updateProductDetailDto: UpdateProductDetailDto,
   ) {
-    return this.permissionService.update(id, updatePermissionDto);
+    return this.productDetailService.update(id, updateProductDetailDto);
   }
 
   @Delete(':id')
+  @ResponseMessage('Xóa chi tiết sản phẩm thành công')
   remove(
     @Param(
       'id',
@@ -66,6 +72,6 @@ export class PermissionController {
     )
     id: string,
   ) {
-    return this.permissionService.remove(id);
+    return this.productDetailService.remove(id);
   }
 }

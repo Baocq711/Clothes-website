@@ -7,7 +7,8 @@ import { Permission } from '@/modules/permission/entities/permission.entity';
 import { Role } from '@/modules/role/entities/role.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { UserService } from '@/modules/user/user.service';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -22,6 +23,8 @@ export class DatabaseService implements OnModuleInit {
     private userRepository: Repository<User>,
 
     private userService: UserService,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
   private readonly logger = new Logger('InitSampleData');
 
@@ -62,6 +65,7 @@ export class DatabaseService implements OnModuleInit {
       const userRole = await this.roleRepository.findOneBy({
         name: USER_ROLE,
       });
+      await this.cacheManager.set('userRole', userRole, 0);
       this.userRepository.save([
         {
           email: 'admin@gmail.com',

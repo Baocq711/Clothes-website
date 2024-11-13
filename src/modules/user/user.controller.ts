@@ -14,22 +14,26 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ResponseMessage } from '@/decorators/message';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ResponseMessage('Tạo tài khoản thành công')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
+  @ResponseMessage('Lấy danh sách tài khoản thành công')
   findAll(@Query() query: PaginationDto) {
     return this.userService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Lấy thông tin tài khoản thành công')
   findOne(
     @Param(
       'id',
@@ -43,6 +47,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @ResponseMessage('Cập nhật thông tin tài khoản thành công')
   update(
     @Param(
       'id',
@@ -57,6 +62,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Xóa tài khoản thành công')
   remove(
     @Param(
       'id',

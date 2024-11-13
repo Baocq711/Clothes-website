@@ -14,22 +14,26 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PaginationDto } from '@/dto/pagination';
+import { ResponseMessage } from '@/decorators/message';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @ResponseMessage('Tạo danh mục thành công')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
+  @ResponseMessage('Lấy danh sách danh mục thành công')
   findAll(@Query() query: PaginationDto) {
     return this.categoryService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Lấy thông tin danh mục thành công')
   findOne(
     @Param(
       'id',
@@ -43,6 +47,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @ResponseMessage('Cập nhật thông tin danh mục thành công')
   update(
     @Param(
       'id',
@@ -57,6 +62,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Xóa danh mục thành công')
   remove(
     @Param(
       'id',

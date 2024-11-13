@@ -6,9 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from '@/modules/role/entities/role.entity';
 import { Contact } from '@/modules/contact/entities/contact.entity';
 import { Review } from '@/modules/review/entities/review.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Role, Contact, Review])],
+  imports: [
+    TypeOrmModule.forFeature([User, Role, Contact, Review]),
+    CacheModule.register(),
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ContactModule } from './modules/contact/contact.module';
@@ -10,6 +10,7 @@ import { ProductModule } from './modules/product/product.module';
 import { ProductDetailModule } from './modules/product-detail/product-detail.module';
 import { ReviewModule } from './modules/review/review.module';
 import { CategoryModule } from './modules/category/category.module';
+import ms from 'ms';
 
 @Module({
   imports: [
@@ -22,6 +23,10 @@ import { CategoryModule } from './modules/category/category.module';
       database: process.env.DB_NAME,
       entities: [__dirname + '/modules/**/entities/*.entity{.ts,.js}'],
       synchronize: true,
+    }),
+    CacheModule.register({
+      ttl: ms(process.env.CACHE_EXPIRES) / 1000, // Cache TTL in seconds
+      max: +process.env.CACHE_MAX, // Maximum number of items in cache
     }),
     UserModule,
     ContactModule,
